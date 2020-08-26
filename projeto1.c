@@ -85,6 +85,7 @@ int algoritmoEscolhido(int alg, int qtd){
         printf("Algoritmo: BeadSort\n"); //alterar ordem depois
        //for(i = 0; i < 2; i++){
             v = (int *) malloc(qtd * sizeof(int));
+            srand(time(NULL));
             for (j = 0; j < qtd; j++){
                 //v = malloc(qtd * sizeof(int));
                 /* gerando valores aleatórios entre zero e 1000 */
@@ -104,6 +105,7 @@ int algoritmoEscolhido(int alg, int qtd){
         printf("Algoritmo escolhido: Bubblesort");
         //for(i = 0; i < 2; i++){
             v = (int *) malloc(qtd * sizeof(int));
+            srand(time(NULL));
             for (j = 0; j < qtd; j++){
                 //v = malloc(qtd * sizeof(int));
                 /* gerando valores aleatórios entre zero e 1000 */
@@ -119,11 +121,13 @@ int algoritmoEscolhido(int alg, int qtd){
         break;
     case 3:
         printf("Algoritmo escolhido: CountingSort");
+
         break;
     case 4:
         printf("Algoritmo escolhido: HeapSort");
         //for(i = 0; i < 2; i++){
             v = (int *) malloc(qtd * sizeof(int));
+            srand(time(NULL));
             for (j = 0; j < qtd; j++){
                 //v = malloc(qtd * sizeof(int));
                 /* gerando valores aleatórios entre zero e 1000 */
@@ -142,8 +146,10 @@ int algoritmoEscolhido(int alg, int qtd){
         break;
     case 6:
         printf("Algoritmo escolhido: MergeSort\n");
+
         //for(i = 0; i < 2; i++){
             v = (int *) malloc(qtd * sizeof(int));
+            srand(time(NULL));
             for (j = 0; j < qtd; j++){
                 //v = malloc(qtd * sizeof(int));
                 /* gerando valores aleatórios entre zero e 1000 */
@@ -165,14 +171,45 @@ int algoritmoEscolhido(int alg, int qtd){
         break;
     case 9:
         printf("Algoritmo: ShellSort");
+        //for(i = 0; i < 2; i++){
+            v = (int *) malloc(qtd * sizeof(int));
+            srand(time(NULL));
+            for (j = 0; j < qtd; j++){
+                //v = malloc(qtd * sizeof(int));
+                /* gerando valores aleatórios entre zero e 1000 */
+                v[j] = rand() % 1000;
+                printf("%d = %d\n", j, v[j]);
+            }
+            shellSort(v, qtd);
+            printf("Vetor ordenado\n");
+            for(int i = 0; i < qtd; i++){
+                printf("%d ", v[i]);
+            }
+        //}
         break;
     case 10:
         printf("Algoritmo: TimSort");
+        //for(i = 0; i < 2; i++){
+            v = (int *) malloc(qtd * sizeof(int));
+            srand(time(NULL));
+            for (j = 0; j < qtd; j++){
+                //v = malloc(qtd * sizeof(int));
+                /* gerando valores aleatórios entre zero e 1000 */
+                v[j] = rand() % 1000;
+                printf("%d = %d\n", j, v[j]);
+            }
+            timSort(v, qtd);
+            printf("Vetor ordenado\n");
+            for(int i = 0; i < qtd; i++){
+                printf("%d ", v[i]);
+            }
+        //}
         break;
     case 11:
         printf("Algoritmo: QuickSort");
         //for(i = 0; i < 2; i++){
             v = (int *) malloc(qtd * sizeof(int));
+            srand(time(NULL));
             for (j = 0; j < qtd; j++){
                 //v = malloc(qtd * sizeof(int));
                 /* gerando valores aleatórios entre zero e 1000 */
@@ -366,6 +403,115 @@ void mergeSort(int *v, int l, int r)
 		merge(v, l, m, r);
 	}
 }
+//algoritmo ShellSort
+void shellSort(int *v, int size) {
+    int i , j , value;
+
+    int h = 1;
+    while(h < size) {
+        h = 3*h+1;
+    }
+    while (h > 0) {
+        for(i = h; i < size; i++) {
+            value = v[i];
+            j = i;
+            while (j > h-1 && value <= v[j - h]) {
+                v[j] = v [j - h];
+                j = j - h;
+            }
+            v [j] = value;
+        }
+        h = h/3;
+    }
+}
+
+//Escopo da funcao timsort
+const int run = 32;
+
+    int minimum(int a, int b)
+    {
+        if(a<b)
+        return a;
+        else
+        return b;
+}
+
+    void insertionSort(int v[], int beg, int end)
+    {
+        int temp, i, j;
+        for (i = beg + 1; i <= end; i++)
+        {
+            temp = v[i];
+            j = i - 1;
+            while (v[j] > temp && j >= beg)
+            {
+                v[j+1] = v[j];
+                j--;
+            }
+            v[j+1] = temp;
+        }
+    }
+
+void merge_tim(int v[], int left, int mid, int right)
+    {
+        int len1 = mid - left + 1, len2 = right - mid;
+        int beg[len1], end[len2];
+        int i,j,k;
+        for (i = 0; i < len1; i++)
+            beg[i] = v[left + i];
+        for (i = 0; i < len2; i++)
+            end[i] = v[mid + 1 + i];
+
+        i = 0;
+        j = 0;
+        k = left;
+
+        while (i < len1 && j < len2)
+        {
+            if (beg[i] <= end[j])
+            {
+                v[k] = beg[i];
+                i++;
+            }
+            else
+            {
+                v[k] = end[j];
+                j++;
+            }
+            k++;
+        }
+        while (i < len1)
+        {
+            v[k] = beg[i];
+            k++;
+            i++;
+        }
+
+        while (j < len2)
+        {
+            v[k] = end[j];
+            k++;
+            j++;
+        }
+    }
+//funcao timSort
+    void timSort(int v[], int qtd)
+    {
+                int i,size,beg,mid,end;
+                for (i = 0; i < qtd; i+=run)
+                    insertionSort(v, i, minimum((i+31), (qtd-1)));
+                for (size = run; size < qtd; size = 2*size)
+                {
+                    for (beg = 0; beg < qtd; beg += 2*size)
+                    {
+                        mid = beg + size - 1;
+                        end = minimum((beg + 2*size - 1), (qtd-1));
+
+                        merge_tim(v, beg, mid, end);
+                    }
+                }
+    }
+
 
 
 //funcao do quicksort, particiona e retorna o indice do pivo
