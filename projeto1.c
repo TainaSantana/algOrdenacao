@@ -102,18 +102,60 @@ int algoritmoEscolhido(int alg, int qtd){
         break;
     case 2:
         printf("Algoritmo escolhido: Bubblesort");
+        //for(i = 0; i < 2; i++){
+            v = (int *) malloc(qtd * sizeof(int));
+            for (j = 0; j < qtd; j++){
+                //v = malloc(qtd * sizeof(int));
+                /* gerando valores aleatórios entre zero e 1000 */
+                v[j] = rand() % 1000;
+                printf("%d = %d\n", j, v[j]);
+            }
+            bubble_sort(v, qtd);
+            printf("Vetor ordenado\n");
+            for(int i = 0; i < qtd; i++){
+                printf("%d ", v[i]);
+    }
+        //}
         break;
     case 3:
         printf("Algoritmo escolhido: CountingSort");
         break;
     case 4:
         printf("Algoritmo escolhido: HeapSort");
+        //for(i = 0; i < 2; i++){
+            v = (int *) malloc(qtd * sizeof(int));
+            for (j = 0; j < qtd; j++){
+                //v = malloc(qtd * sizeof(int));
+                /* gerando valores aleatórios entre zero e 1000 */
+                v[j] = rand() % 1000;
+                printf("%d = %d\n", j, v[j]);
+            }
+            HeapSort(v, qtd);
+            printf("Vetor ordenado\n");
+            for(int i = 0; i < qtd; i++){
+                printf("%d ", v[i]);
+    }
+        //}
         break;
     case 5:
         printf("Algoritmo escolhido: InsertionSort");
         break;
     case 6:
-        printf("Algoritmo escolhido: MergeSort");
+        printf("Algoritmo escolhido: MergeSort\n");
+        //for(i = 0; i < 2; i++){
+            v = (int *) malloc(qtd * sizeof(int));
+            for (j = 0; j < qtd; j++){
+                //v = malloc(qtd * sizeof(int));
+                /* gerando valores aleatórios entre zero e 1000 */
+                v[j] = rand() % 1000;
+                printf("%d = %d\n", j, v[j]);
+            }
+            mergeSort(v, 0, qtd - 1);
+            printf("Vetor ordenado\n");
+            for(int i = 0; i < qtd; i++){
+                printf("%d ", v[i]);
+            }
+        //}
         break;
     case 7:
         printf("Algoritmo escolhido: RadixSort");
@@ -192,6 +234,139 @@ void bead_sort(int *a, int qtd)
 	}
 	//free(beads);
 }
+
+void bubble_sort(int *v, int qtd)
+{
+
+	int i, continua, aux, fim = qtd;
+
+    do {
+        continua = 0;
+        for(i = 0; i < fim; i++){
+            if(v[i] > v[i+1]){
+                aux = v[i];
+                v[i] = v[i+1];
+                v[i+1] = aux;
+                continua = i;
+
+            }
+        }
+        fim--;
+    } while(continua != 0);
+
+
+}
+
+void HeapSort(int *v, int qtd){
+    int i, aux;
+
+    for(i=(qtd-1)/2; i>=0; i--){
+        CriandoHeap(v, i, qtd-1);
+    }
+
+    for(i=(qtd-1); i>0; i--){
+        aux = v[0];
+        v[0] = v[i];
+        v[i] = aux;
+        CriandoHeap(v, 0, i-1);
+    }
+}
+
+void CriandoHeap(int *v, int ini, int fim){
+    int filho = 2*ini + 1, aux = v[ini], i;
+
+    while(filho <= fim){
+
+        if(filho < fim){
+            if(v[filho] < v[filho + 1]){
+                filho += 1;
+            }
+        }
+
+        if(v[filho] > aux){
+            v[ini] = v[filho];
+            ini = filho;
+            filho = ini*2 + 1;
+        }else{
+            filho = fim + 1;
+        }
+
+    }
+
+    v[ini] = aux;
+}
+
+void merge(int *v, int l, int m, int r)
+{
+	int i, j, k;
+	int n1 = m - l + 1;
+	int n2 = r - m;
+
+	/* create temp arrays */
+	int L[n1], R[n2];
+
+	/* Copy data to temp arrays L[] and R[] */
+	for (i = 0; i < n1; i++)
+		L[i] = v[l + i];
+	for (j = 0; j < n2; j++)
+		R[j] = v[m + 1+ j];
+
+	/* Merge the temp arrays back into arr[l..r]*/
+	i = 0; // Initial index of first subarray
+	j = 0; // Initial index of second subarray
+	k = l; // Initial index of merged subarray
+	while (i < n1 && j < n2)
+	{
+		if (L[i] <= R[j])
+		{
+			v[k] = L[i];
+			i++;
+		}
+		else
+		{
+			v[k] = R[j];
+			j++;
+		}
+		k++;
+	}
+
+	/* Copy the remaining elements of L[], if there
+	are any */
+	while (i < n1)
+	{
+		v[k] = L[i];
+		i++;
+		k++;
+	}
+
+	/* Copy the remaining elements of R[], if there
+	are any */
+	while (j < n2)
+	{
+		v[k] = R[j];
+		j++;
+		k++;
+	}
+}
+
+/* l is for left index and r is right index of the
+sub-array of arr to be sorted */
+void mergeSort(int *v, int l, int r)
+{
+	if (l < r)
+	{
+		// Same as (l+r)/2, but avoids overflow for
+		// large l and h
+		int m = l+(r-l)/2;
+
+		// Sort first and second halves
+		mergeSort(v, l, m);
+		mergeSort(v, m+1, r);
+
+		merge(v, l, m, r);
+	}
+}
+
 
 //funcao do quicksort, particiona e retorna o indice do pivo
 int particiona(int *v, int ini, int fim) {
