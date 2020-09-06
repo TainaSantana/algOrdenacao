@@ -31,7 +31,7 @@ int main(){
     printf("\nInforme o numero correspondente ao algoritmo a ser analisado: ");
     scanf("%d", &alg);
 
-    //se o valor estiver entre 1 e 11 (incluindo ambos os valores), o usuario seleciona a qtd de elementos
+    //selecao da qtd de elementos a serem ordenados
     if(alg >= 1 && alg <= 11){
         system("cls");
         printf("Escolha a quantidade de elementos a serem ordenados\n");
@@ -67,8 +67,7 @@ int main(){
             printf("Valor invalido!");
             break;
         }
-        result = algoritmoEscolhido(alg, qtd);
-        //printf("\nChamada da funcao: %d", result);
+        result = algoritmoEscolhido(alg, qtd); //chama a funcao que realiza a ordenacao e calcula tempo de acordo com algoritmo e qtd de elementos escolhido
 
     }
     else{
@@ -80,12 +79,14 @@ int main(){
 
 }
 
-
+//Funcao que exibe relatorio com o resultado do tempo de ordenacao do algoritmo escolhido
 void printRelatorio(int qtd, float tmp_medio[]) {
-  printf("Quantidade de elementos ordenados: %d\n", qtd);
-  printf("Tempo medio de ordenacao de vetores aleatorios: %f\n", tmp_medio[0]);
-  printf("Tempo de ordenacao de vetores crescentes: %f\n", tmp_medio[1]);
-  printf("Tempo medio de ordenacao de vetores decrescentes: %f\n", tmp_medio[2]);
+  printf("\t\t----------------- RELATORIO DE TEMPO DE ORDENACAO -------------------\n");
+  printf("\t\t|Quantidade de elementos ordenados: %d                             |\n", qtd);
+  printf("\t\t|Tempo medio de ordenacao de vetores aleatorios: %f            |\n", tmp_medio[0]);
+  printf("\t\t|Tempo de ordenacao de vetores crescentes: %f                  |\n", tmp_medio[1]);
+  printf("\t\t|Tempo medio de ordenacao de vetores decrescentes: %f          |\n", tmp_medio[2]);
+  printf("\t\t---------------------------------------------------------------------\n");
 
 }
 
@@ -101,733 +102,575 @@ int algoritmoEscolhido(int alg, int qtd){
 
     switch(alg){
     case 1:
+        printf("Aguarde enquanto o relatorio eh gerado...");
+        printf("\n\nAlgoritmo escolhido: BeadSort\n");
 
-    printf("Algoritmo: BeadSort\n");
-
+        //ordenacao sera repetida 10 vezes
         for(i = 0; i < 10; i++){
+            //alocacao dinamica do vetor
             v = (int *) malloc(qtd * sizeof(int));
             gettimeofday(&tempo_antes, NULL); //coleta tempo no inicio
             srand(time(NULL));
+            //preenche vetores com elementos aleatorios
             for (j = 0; j < qtd; j++){
-                /* gerando valores aleatórios entre zero e 1000 */
-                v[j] = rand() % 1000;
-                //printf("%d = %d\n", j, v[j]);
+                /* gerando valores aleatórios entre zero e 10000 */
+                v[j] = rand() % 10000;
             }
-            bead_sort(v, qtd);
+            bead_sort(v, qtd); //chama funcao do beadsort e passa o vetor dinamico e a quantidade de elementos a serem ordenados
 
             gettimeofday(&tempo_depois, NULL); //coleta tempo no final
+            //calcula tempo em segundos
             deltaT = (tempo_depois.tv_sec + tempo_depois.tv_sec/1000000.0) - (tempo_antes.tv_sec + tempo_antes.tv_sec/1000000.0);
-            //free(v);
-            soma += deltaT;
-
-
-            /*printf("Vetor ordenado\n");
-            for(int i = 0; i < qtd; i++){
-                printf("%d ", v[i]);
-            }*/
-             free(v);
-
-            /*printf("\nTempo de execução usando gettime: %f segundos \n", deltaT);
-            printf("\nSomatoria do tempo: %f\n", soma);
-            printf("\nTempo medio: %f\n", tmp_medio[0]);*/
-
+            soma += deltaT; //faz a somatoria dos segundos de cada ordenacao para calcular media
+            free(v); //libera memoria do vetor
 
         }
-        tmp_medio[0] = soma / 10;
+        tmp_medio[0] = soma / 10; //calcula tempo medio ordenacao
 
-        /*Tempo de execucao de vetor em ordem crescente*/
-            v = malloc (qtd * sizeof(int));
-            //Percorre o vetor de forma ordenada
-            gettimeofday(&tempo_antes, NULL);
+           /*Tempo de execucao de vetor em ordem crescente*/
+            v = malloc (qtd * sizeof(int)); //aloca vetor dinamicamente
+            gettimeofday(&tempo_antes, NULL); //coleta tempo de inicio
+            //Preenche o vetor ordenado de forma crescente
             for(int i = 0; i < qtd; i++){
                 v[i] = i;
-                //printf("%d ", v[i]);
             }
-            bead_sort(v, qtd);
+            bead_sort(v, qtd); //chama funcao beadsort para ordenar vetores em ordem crescente
             gettimeofday(&tempo_depois, NULL); //coleta tempo no final
             tmp_medio[1] = (tempo_depois.tv_sec + tempo_depois.tv_sec/1000000.0) - (tempo_antes.tv_sec + tempo_antes.tv_sec/1000000.0);
-            //printf("\nTempo de execução dos vetores ordenados %f: \n", tmp_medio[1]);
-            free(v);
+            free(v); //libera memoria do vetor
 
             /* Tempo de execução do vetor em ordem decrescente*/
             v = (int *) malloc(qtd * sizeof(int));
             gettimeofday(&tempo_antes, NULL); //coleta tempo no inicio
+            //preenche o vetor de forma decrescente
             for(int i = 0; i < qtd; i++){
                 v[i] = qtd - i;
-                //printf("%d ", v[i]);
             }
-            bead_sort(v, qtd);
+            bead_sort(v, qtd); //chama a funcao para ordenar os vetores que estao em ordem decrescente
             gettimeofday(&tempo_depois, NULL); //coleta tempo no final
             tmp_medio[2] = (tempo_depois.tv_sec + tempo_depois.tv_sec/1000000.0) - (tempo_antes.tv_sec + tempo_antes.tv_sec/1000000.0);
-            free(v);
+            free(v); //libera memoria do vetor
 
-            /*printf("Vetor decrescente ordenado\n");
-            for(int i = 0; i < qtd; i++){
-                printf("%d ", v[i]);
-            }*/
-            //printf("\nTempo de execução dos vetores ordenados %f: \n", tmp_medio[2]);
-            printRelatorio(qtd, tmp_medio);
+            printRelatorio(qtd, tmp_medio); //chama funcao de exibicao de relatorio do tempo de execucao
 
         break;
     case 2:
-        printf("Algoritmo escolhido: Bubblesort\n");
+        printf("Aguarde enquanto o relatorio eh gerado...");
+        printf("\n\nAlgoritmo escolhido: Bubblesort\n");
+
+        //ordenacao sera repetida 10 vezes
         for(i = 0; i < 10; i++){
+            //alocacao dinamica do vetor
             v = (int *) malloc(qtd * sizeof(int));
             gettimeofday(&tempo_antes, NULL); //coleta tempo no inicio
             srand(time(NULL));
+            //preenche vetores com elementos aleatorios
             for (j = 0; j < qtd; j++){
-                /* gerando valores aleatórios entre zero e 1000 */
-                v[j] = rand() % 1000;
-                //printf("%d = %d\n", j, v[j]);
+                /* gerando valores aleatórios entre zero e 10000 */
+                v[j] = rand() % 10000;
             }
-            bubble_sort(v, qtd);
+            bubble_sort(v, qtd); //chama funcao do bubblesort e passa o vetor dinamico e a quantidade de elementos a serem ordenados
             gettimeofday(&tempo_depois, NULL); //coleta tempo no final
             deltaT = (tempo_depois.tv_sec + tempo_depois.tv_sec/1000000.0) - (tempo_antes.tv_sec + tempo_antes.tv_sec/1000000.0);
-            //free(v);
+            free(v); //libera memoria do vetor
             soma += deltaT;
-            tmp_medio[0] = soma / 10;
-
-            /*printf("Vetor ordenado\n");
-            for(int i = 0; i < qtd; i++){
-                printf("%d ", v[i]);
-            }*/
-            free(v);
-
-           /* printf("\nTempo de execução usando gettime: %f segundos \n", deltaT);
-            printf("\nSomatoria do tempo: %f\n", soma);
-            printf("\nTempo medio: %f\n", tmp_medio[0]);*/
         }
+        tmp_medio[0] = soma / 10; //calcula tempo medio ordenacao
 
-        /*Tempo de execucao de vetor em ordem crescente*/
-            v = malloc (qtd * sizeof(int));
-            //Percorre o vetor de forma ordenada
-            gettimeofday(&tempo_antes, NULL);
+         /*Tempo de execucao de vetor em ordem crescente*/
+            v = malloc (qtd * sizeof(int)); //aloca vetor dinamicamente
+            gettimeofday(&tempo_antes, NULL); //coleta tempo de inicio
+            //Preenche o vetor ordenado de forma crescente
             for(int i = 0; i < qtd; i++){
                 v[i] = i;
-                //printf("%d ", v[i]);
             }
-            bubble_sort(v, qtd);
+            bubble_sort(v, qtd); //chama funcao bublesort para ordenar vetores em ordem crescente
             gettimeofday(&tempo_depois, NULL); //coleta tempo no final
             tmp_medio[1] = (tempo_depois.tv_sec + tempo_depois.tv_sec/1000000.0) - (tempo_antes.tv_sec + tempo_antes.tv_sec/1000000.0);
-            //printf("\nTempo de execução dos vetores ordenados %f: \n", tmp_medio[1]);
-            free(v);
+            free(v); //libera memoria do vetor
+
 
             /* Tempo de execução do vetor em ordem decrescente*/
             v = (int *) malloc(qtd * sizeof(int));
             gettimeofday(&tempo_antes, NULL); //coleta tempo no inicio
-            printf("\nVetor decrescente calc2\n");
+            //preenche o vetor de forma decrescente
             for(int i = 0; i < qtd; i++){
                 v[i] = qtd - i;
-                //printf("%d ", v[i]);
             }
-            bubble_sort(v, qtd);
+            bubble_sort(v, qtd); //chama funcao do bubblesort
             gettimeofday(&tempo_depois, NULL); //coleta tempo no final
             tmp_medio[2] = (tempo_depois.tv_sec + tempo_depois.tv_sec/1000000.0) - (tempo_antes.tv_sec + tempo_antes.tv_sec/1000000.0);
-            //free(v);
+            free(v); //libera memoria do vetor
 
-            /*printf("Vetor decrescente ordenado\n");
-            for(int i = 0; i < qtd; i++){
-                printf("%d ", v[i]);
-            }*/
-            //printf("\nTempo de execução dos vetores ordenados %f: \n", tmp_medio[2]);
 
-            printRelatorio(qtd, tmp_medio);
+            printRelatorio(qtd, tmp_medio); //chama funcao de exibicao de relatorio do tempo de execucao
         break;
     case 3:
-        printf("Algoritmo escolhido: CountingSort\n");
+        printf("Aguarde enquanto o relatorio eh gerado...");
+        printf("\n\nAlgoritmo escolhido: CountingSort\n");
+
+        //ordenacao sera repetida 10 vezes
         for(i = 0; i < 10; i++){
+            //faz alocacao dinamica do vetor
             v = (int *) malloc(qtd * sizeof(int));
             gettimeofday(&tempo_antes, NULL); //coleta tempo no inicio
             srand(time(NULL));
+            //preenche vetores com elementos aleatorios
             for (j = 0; j < qtd; j++){
-                /* gerando valores aleatórios entre zero e 1000 */
+                /* gerando valores aleatorios entre zero e 10000 */
                 v[j] = rand() % 10000;
-                //printf("%d = %d\n", j, v[j]);
             }
-            countingSort(v, qtd);
+            countingSort(v, qtd); //chama funcao do coutingsort e passa o vetor dinamico e a quantidade de elementos a serem ordenados
             gettimeofday(&tempo_depois, NULL); //coleta tempo no final
             deltaT = (tempo_depois.tv_sec + tempo_depois.tv_sec/1000000.0) - (tempo_antes.tv_sec + tempo_antes.tv_sec/1000000.0);
             soma += deltaT;
-
-
-
-            /*printf("Vetor ordenado\n");
-            for(int i = 0; i < qtd; i++){
-                printf("%d ", v[i]);
-            }*/
-
-            free(v);
-
-            //printf("\nTempo de execução usando gettime: %f segundos \n", deltaT);
+            free(v); //libera memoria do vetor
 
 
        }
-        tmp_medio[0] = soma / 10;
-        //printf("\n1. Tempo medio: %f\n", tmp_medio[0]);
-        //printf("\nSomatoria do tempo: %f\n", soma);
+        tmp_medio[0] = soma / 10; //calcula tempo medio de ordenacao
 
 
+            /*Tempo de execucao de vetor em ordem crescente*/
 
-        /*Tempo de execucao de vetor em ordem crescente*/
+            //alocacao dinamica do vetor
             v = malloc (qtd * sizeof(int));
-            //Percorre o vetor de forma ordenada
-            gettimeofday(&tempo_antes, NULL);
+            gettimeofday(&tempo_antes, NULL); //coleta tempo de inicio
+            //Preenche o vetor ordenado de forma crescente
             for(int i = 0; i < qtd; i++){
                 v[i] = i;
-                //printf("%d ", v[i]);
             }
-            countingSort(v, qtd);
+            countingSort(v, qtd); //chama funcao do coutingSort
             gettimeofday(&tempo_depois, NULL); //coleta tempo no final
             tmp_medio[1] = (tempo_depois.tv_sec + tempo_depois.tv_sec/1000000.0) - (tempo_antes.tv_sec + tempo_antes.tv_sec/1000000.0);
-            //printf("\n1. Tempo de execução dos vetores ordenados %f: \n", tmp_medio[1]);
-            free(v);
+            free(v); //libera memoria do vetor
 
             /* Tempo de execução do vetor em ordem decrescente*/
+            //faz alocacao dinamica do vetor
             v = (int *) malloc(qtd * sizeof(int));
             gettimeofday(&tempo_antes, NULL); //coleta tempo no inicio
+            //percorre o vetor de forma decrescente
             for(int i = 0; i < qtd; i++){
                 v[i] = qtd - i;
-                //printf("%d ", v[i]);
             }
-            countingSort(v, qtd);
+            countingSort(v, qtd); //chama funcao do coutingSort
             gettimeofday(&tempo_depois, NULL); //coleta tempo no final
             tmp_medio[2] = (tempo_depois.tv_sec + tempo_depois.tv_sec/1000000.0) - (tempo_antes.tv_sec + tempo_antes.tv_sec/1000000.0);
-            free(v);
+            free(v); //libera memoria do vetor
 
-            /*printf("Vetor decrescente ordenado\n");
-            for(int i = 0; i < qtd; i++){
-                printf("%d ", v[i]);
-            }*/
-
-            printRelatorio(qtd, tmp_medio);
-
+            printRelatorio(qtd, tmp_medio); //chama funcao de exibicao de relatorio do tempo de execucao
 
         break;
     case 4:
+        printf("Aguarde enquanto o relatorio eh gerado...");
         printf("Algoritmo escolhido: HeapSort\n");
+
+        //ordenacao sera repetida 10 vezes
         for(i = 0; i < 10; i++){
-            v = (int *) malloc(qtd * sizeof(int));
+            v = (int *) malloc(qtd * sizeof(int)); //faz alocacao dinamica do vetor
             gettimeofday(&tempo_antes, NULL); //coleta tempo no inicio
             srand(time(NULL));
+            //preenche vetores com elementos aleatorios
             for (j = 0; j < qtd; j++){
-                /* gerando valores aleatórios entre zero e 1000 */
-                v[j] = rand() % 1000;
-                //printf("%d = %d\n", j, v[j]);
+                /* gerando valores aleatórios entre zero e 10000 */
+                v[j] = rand() % 10000;
             }
-            HeapSort(v, qtd);
+            HeapSort(v, qtd); //chama funcao do heapsort e passa o vetor dinamico e a quantidade de elementos a serem ordenados
             gettimeofday(&tempo_depois, NULL); //coleta tempo no final
             deltaT = (tempo_depois.tv_sec + tempo_depois.tv_sec/1000000.0) - (tempo_antes.tv_sec + tempo_antes.tv_sec/1000000.0);
             soma += deltaT;
-
-
-            /*printf("Vetor ordenado\n");
-            for(int i = 0; i < qtd; i++){
-                printf("%d ", v[i]);
-            }*/
-            free(v);
-
-            //printf("\nTempo de execução usando gettime: %f segundos \n", deltaT);
-            //printf("\nSomatoria do tempo: %f\n", soma);
+            free(v); //libera memoria do vetor
 
         }
-        tmp_medio[0] = soma / 10;
-        //printf("\nTempo medio: %f\n", tmp_medio[0]);
+        tmp_medio[0] = soma / 10; //calcula tempo medio de ordencao
 
-        /*Tempo de execucao de vetor em ordem crescente*/
-            v = malloc (qtd * sizeof(int));
-            //Percorre o vetor de forma ordenada
-            gettimeofday(&tempo_antes, NULL);
+           /*Tempo de execucao de vetor em ordem crescente*/
+            v = malloc (qtd * sizeof(int)); //faz alocacao dinamica do vetor
+
+            gettimeofday(&tempo_antes, NULL); //coleta tempo no inicio
+            //Preenche o vetor ordenado de forma crescente
             for(int i = 0; i < qtd; i++){
                 v[i] = i;
-                //printf("%d ", v[i]);
             }
-            HeapSort(v, qtd);
+            HeapSort(v, qtd); //chama funcao do heapsort
             gettimeofday(&tempo_depois, NULL); //coleta tempo no final
             tmp_medio[1] = (tempo_depois.tv_sec + tempo_depois.tv_sec/1000000.0) - (tempo_antes.tv_sec + tempo_antes.tv_sec/1000000.0);
-            //printf("\nTempo de execução dos vetores ordenados %f: \n", tmp_medio[1]);
-            free(v);
+            free(v); //libera memoria do vetor
 
             /* Tempo de execução do vetor em ordem decrescente*/
-            v = (int *) malloc(qtd * sizeof(int));
+            v = (int *) malloc(qtd * sizeof(int)); //faz alocacao dinamica do vetor
             gettimeofday(&tempo_antes, NULL); //coleta tempo no inicio
 
+            //Preenche o vetor de forma decrescente
             for(int i = 0; i < qtd; i++){
                 v[i] = qtd - i;
-                //printf("%d ", v[i]);
             }
-            HeapSort(v, qtd);
+            HeapSort(v, qtd); //chama funcao do heapsort
             gettimeofday(&tempo_depois, NULL); //coleta tempo no final
             tmp_medio[2] = (tempo_depois.tv_sec + tempo_depois.tv_sec/1000000.0) - (tempo_antes.tv_sec + tempo_antes.tv_sec/1000000.0);
-            //free(v);
+            free(v); //libera memoria do vetor
 
-            /*printf("Vetor decrescente ordenado\n");
-            for(int i = 0; i < qtd; i++){
-                printf("%d ", v[i]);
-            }*/
-            //printf("\nTempo de execução dos vetores decrescentes %f: \n\n", tmp_medio[2]);
-            printRelatorio(qtd, tmp_medio);
+            printRelatorio(qtd, tmp_medio); //chama funcao de exibicao de relatorio do tempo de execucao
         break;
     case 5:
-        printf("Algoritmo escolhido: InsertionSort\n");
+        printf("Aguarde enquanto o relatorio eh gerado...");
+        printf("\n\nAlgoritmo escolhido: InsertionSort\n");
+
+        //ordenacao sera repetida 10 vezes
         for(i = 0; i < 10; i++){
-            v = (int *) malloc(qtd * sizeof(int));
+            v = (int *) malloc(qtd * sizeof(int)); //faz alocacao dinamica do vetor
             gettimeofday(&tempo_antes, NULL); //coleta tempo no inicio
             srand(time(NULL));
+            //preenche vetores com elementos aleatorios
             for (j = 0; j < qtd; j++){
-                /* gerando valores aleatórios entre zero e 1000 */
-                v[j] = rand() % 1000;
-                //printf("%d = %d\n", j, v[j]);
+                /* gerando valores aleatórios entre zero e 10000 */
+                v[j] = rand() % 10000;
             }
-            Insertion_Sort(v, qtd);
+            Insertion_Sort(v, qtd); //chama funcao do insertioSort e passa o vetor dinamico e a quantidade de elementos a serem ordenados
             gettimeofday(&tempo_depois, NULL); //coleta tempo no final
             deltaT = (tempo_depois.tv_sec + tempo_depois.tv_sec/1000000.0) - (tempo_antes.tv_sec + tempo_antes.tv_sec/1000000.0);
             soma += deltaT;
-
-
-            /*printf("Vetor ordenado\n");
-            for(int i = 0; i < qtd; i++){
-                printf("%d ", v[i]);
-            */
-            free(v);
-
-            //printf("\nTempo de execução usando gettime: %f segundos \n", deltaT);
-            //printf("\nSomatoria do tempo: %f\n", soma);
+            free(v); //libera memoria do vetor
 
         }
-        tmp_medio[0] = soma / 10;
-        //printf("\nTempo medio: %f\n", tmp_medio[0]);
+        tmp_medio[0] = soma / 10; //calcula tempo medio de ordencao
 
-        /*Tempo de execucao de vetor em ordem crescente*/
-            v = malloc (qtd * sizeof(int));
-            //Percorre o vetor de forma ordenada
-            gettimeofday(&tempo_antes, NULL);
+            /*Tempo de execucao de vetor em ordem crescente*/
+            v = malloc (qtd * sizeof(int)); //faz alocacao dinamica do vetor
+
+            gettimeofday(&tempo_antes, NULL); //coleta tempo no inicio
+            //Preenche o vetor ordenado de forma crescente
             for(int i = 0; i < qtd; i++){
                 v[i] = i;
-                //printf("%d ", v[i]);
             }
-            Insertion_Sort(v, qtd);
+            Insertion_Sort(v, qtd); //chama funcao do insertioSort
             gettimeofday(&tempo_depois, NULL); //coleta tempo no final
             tmp_medio[1] = (tempo_depois.tv_sec + tempo_depois.tv_sec/1000000.0) - (tempo_antes.tv_sec + tempo_antes.tv_sec/1000000.0);
-            //printf("\nTempo de execução dos vetores ordenados %f: \n", tmp_medio[1]);
-            free(v);
+            free(v); //libera memoria do vetor
 
             /* Tempo de execução do vetor em ordem decrescente*/
-            v = (int *) malloc(qtd * sizeof(int));
+            v = (int *) malloc(qtd * sizeof(int)); //faz alocacao dinamica do vetor
             gettimeofday(&tempo_antes, NULL); //coleta tempo no inicio
+            //Preenche o vetor de forma decrescente
             for(int i = 0; i < qtd; i++){
                 v[i] = qtd - i;
-                //printf("%d ", v[i]);
             }
-            Insertion_Sort(v, qtd);
+            Insertion_Sort(v, qtd); //chama funcao do insertioSort
             gettimeofday(&tempo_depois, NULL); //coleta tempo no final
             tmp_medio[2] = (tempo_depois.tv_sec + tempo_depois.tv_sec/1000000.0) - (tempo_antes.tv_sec + tempo_antes.tv_sec/1000000.0);
+            free(v); //libera memoria do vetor
 
-
-            /*printf("Vetor decrescente ordenado\n");
-            for(int i = 0; i < qtd; i++){
-                printf("%d ", v[i]);
-            }*/
-            free(v);
-            //printf("\nTempo de execução dos vetores decrescentes %f: \n", tmp_medio[2]);
-
-            printRelatorio(qtd, tmp_medio);
+            printRelatorio(qtd, tmp_medio); //chama funcao de exibicao de relatorio do tempo de execucao
         break;
     case 6:
-        printf("Algoritmo escolhido: MergeSort\n");
+        printf("Aguarde enquanto o relatorio eh gerado...");
+        printf("\n\nAlgoritmo escolhido: MergeSort\n");
 
+        //ordenacao sera repetida 10 vezes
         for(i = 0; i < 10; i++){
-            v = (int *) malloc(qtd * sizeof(int));
+            v = (int *) malloc(qtd * sizeof(int)); //faz alocacao dinamica do vetor
             gettimeofday(&tempo_antes, NULL); //coleta tempo no inicio
             srand(time(NULL));
+            //preenche vetores com elementos aleatorios
             for (j = 0; j < qtd; j++){
-                /* gerando valores aleatórios entre zero e 1000 */
-                v[j] = rand() % 1000;
-                //printf("%d = %d\n", j, v[j]);
+                /* gerando valores aleatórios entre zero e 10000 */
+                v[j] = rand() % 10000;
             }
-            mergeSort(v, 0, qtd - 1);
+            mergeSort(v, 0, qtd - 1); //chama funcao do mergeSort e passa o vetor dinamico e a quantidade de elementos a serem ordenados
             gettimeofday(&tempo_depois, NULL); //coleta tempo no final
             deltaT = (tempo_depois.tv_sec + tempo_depois.tv_sec/1000000.0) - (tempo_antes.tv_sec + tempo_antes.tv_sec/1000000.0);
             soma += deltaT;
-
-            /*printf("Vetor ordenado\n");
-            for(int i = 0; i < qtd; i++){
-                printf("%d ", v[i]);
-            }*/
-            free(v);
-
-            //printf("\nTempo de execução usando gettime: %f segundos \n", deltaT);
-            //printf("\nSomatoria do tempo: %f\n", soma);
+            free(v); //libera memoria do vetor
 
         }
-        tmp_medio[0] = soma / 10;
-        //printf("\nTempo medio: %f\n", tmp_medio[0]);
+        tmp_medio[0] = soma / 10; //calcula tempo medio de ordenacao
 
-        /*Tempo de execucao de vetor em ordem crescente*/
-            v = malloc (qtd * sizeof(int));
-            //Percorre o vetor de forma ordenada
-            gettimeofday(&tempo_antes, NULL);
+           /*Tempo de execucao de vetor em ordem crescente*/
+            v = malloc (qtd * sizeof(int)); //faz alocacao dinamica do vetor
+
+            gettimeofday(&tempo_antes, NULL); //coleta tempo no inicio
+            //Preenche o vetor ordenado de forma crescente
             for(int i = 0; i < qtd; i++){
                 v[i] = i;
-                //printf("%d ", v[i]);
             }
-            mergeSort(v, 0, qtd - 1);
+            mergeSort(v, 0, qtd - 1); //chama funcao do mergeSort
             gettimeofday(&tempo_depois, NULL); //coleta tempo no final
             tmp_medio[1] = (tempo_depois.tv_sec + tempo_depois.tv_sec/1000000.0) - (tempo_antes.tv_sec + tempo_antes.tv_sec/1000000.0);
-            //printf("\nTempo de execução dos vetores ordenados %f: \n", tmp_medio[1]);
-            free(v);
+            free(v); //libera memoria do vetor
 
             /* Tempo de execução do vetor em ordem decrescente*/
-            v = (int *) malloc(qtd * sizeof(int));
+            v = (int *) malloc(qtd * sizeof(int)); //faz alocacao dinamica do vetor
             gettimeofday(&tempo_antes, NULL); //coleta tempo no inicio
+            //Preenche o vetor de forma decrescente
             for(int i = 0; i < qtd; i++){
                 v[i] = qtd - i;
-                //printf("%d ", v[i]);
             }
-            mergeSort(v, 0, qtd - 1);
+            mergeSort(v, 0, qtd - 1); //chama funcao do mergeSort
             gettimeofday(&tempo_depois, NULL); //coleta tempo no final
             tmp_medio[2] = (tempo_depois.tv_sec + tempo_depois.tv_sec/1000000.0) - (tempo_antes.tv_sec + tempo_antes.tv_sec/1000000.0);
-            free(v);
+            free(v); //libera memoria do vetor
 
-            /*printf("Vetor decrescente ordenado\n");
-            for(int i = 0; i < qtd; i++){
-                printf("%d ", v[i]);
-            }*/
-            //printf("\nTempo de execução dos vetores ordenados %f: \n", tmp_medio[2]);
-
-            printRelatorio(qtd, tmp_medio);
+            printRelatorio(qtd, tmp_medio); //chama funcao de exibicao de relatorio do tempo de execucao
         break;
     case 7:
-        printf("Algoritmo escolhido: RadixSort\n");
+        printf("Aguarde enquanto o relatorio eh gerado...");
+        printf("\n\nAlgoritmo escolhido: RadixSort\n");
+
+        //ordenacao sera repetida 10 vezes
         for(i = 0; i < 10; i++){
-            v = (int *) malloc(qtd * sizeof(int));
+            v = (int *) malloc(qtd * sizeof(int)); //faz alocacao dinamica do vetor
             gettimeofday(&tempo_antes, NULL); //coleta tempo no inicio
             srand(time(NULL));
+            //preenche vetores com elementos aleatorios
             for (j = 0; j < qtd; j++){
-                /* gerando valores aleatórios entre zero e 1000 */
-                v[j] = rand() % 1000;
-                //printf("%d = %d\n", j, v[j]);
+                /* gerando valores aleatórios entre zero e 10000 */
+                v[j] = rand() % 10000;
             }
-            radixsort(v, qtd);
+            radixsort(v, qtd); //chama funcao do radixsort e passa o vetor dinamico e a quantidade de elementos a serem ordenados
             gettimeofday(&tempo_depois, NULL); //coleta tempo no final
             deltaT = (tempo_depois.tv_sec + tempo_depois.tv_sec/1000000.0) - (tempo_antes.tv_sec + tempo_antes.tv_sec/1000000.0);
             soma += deltaT;
-
-            /*printf("Vetor ordenado\n");
-            for(int i = 0; i < qtd; i++){
-                printf("%d ", v[i]);
-            }*/
-            free(v);
-
-            //printf("\nTempo de execução usando gettime: %f segundos \n", deltaT);
-            //printf("\nSomatoria do tempo: %f\n", soma);
+            free(v); //libera memoria do vetor
 
         }
-        tmp_medio[0] = soma / 10;
-        //printf("\nTempo medio: %f\n", tmp_medio[0]);
+        tmp_medio[0] = soma / 10; //calcula tempo medio de ordencao
 
         /*Tempo de execucao de vetor em ordem crescente*/
         /*aqui nao funciona
-            v = malloc (qtd * sizeof(int));
-            //Percorre o vetor de forma ordenada
-            gettimeofday(&tempo_antes, NULL);
+            v = malloc (qtd * sizeof(int)); //faz alocacao dinamica do vetor
+
+            gettimeofday(&tempo_antes, NULL); //coleta tempo de inicio
+            //Preenche o vetor ordenado de forma crescente
             for(int i = 0; i < qtd; i++){
                 v[i] = i;
-                printf("%d ", v[i]);
             }
-            radixsort(v, qtd);
+            radixsort(v, qtd); //chama funcao do radixsort
             gettimeofday(&tempo_depois, NULL); //coleta tempo no final
             tmp_medio[1] = (tempo_depois.tv_sec + tempo_depois.tv_sec/1000000.0) - (tempo_antes.tv_sec + tempo_antes.tv_sec/1000000.0);
-            printf("\nTempo de execução dos vetores ordenados %f: \n", tmp_medio[1]);
-            free(v);*/
+            free(v); //libera memoria do vetor */
 
             /* Tempo de execução do vetor em ordem decrescente*/
-            v = (int *) malloc(qtd * sizeof(int));
+            v = (int *) malloc(qtd * sizeof(int)); //faz alocacao dinamica do vetor
             gettimeofday(&tempo_antes, NULL); //coleta tempo no inicio
+            //Preenche o vetor de forma decrescente
             for(int i = 0; i < qtd; i++){
                 v[i] = qtd - i;
-                //printf("%d ", v[i]);
             }
-            radixsort(v, qtd);
+            radixsort(v, qtd); //chama funcao do radixsort
             gettimeofday(&tempo_depois, NULL); //coleta tempo no final
             tmp_medio[2] = (tempo_depois.tv_sec + tempo_depois.tv_sec/1000000.0) - (tempo_antes.tv_sec + tempo_antes.tv_sec/1000000.0);
-            //free(v);
+            free(v); //libera memoria do vetor
 
-            /*printf("Vetor decrescente ordenado\n");
-            for(int i = 0; i < qtd; i++){
-                printf("%d ", v[i]);
-            }*/
-            free(v);
-            //printf("\nTempo de execução dos vetores decrescentes %f: \n", tmp_medio[2]);
-
-            printRelatorio(qtd, tmp_medio);
+            printRelatorio(qtd, tmp_medio); //chama funcao de exibicao de relatorio do tempo de execucao
 
         break;
     case 8:
-        printf("Algoritmo: SelectionSort\n");
+        printf("Aguarde enquanto o relatorio eh gerado...");
+        printf("\n\nAlgoritmo escolhido: SelectionSort\n");
+
+        //ordenacao sera repetida 10 vezes
         for(i = 0; i < 10; i++){
-            v = (int *) malloc(qtd * sizeof(int));
+            v = (int *) malloc(qtd * sizeof(int)); //alocacao dinamica do vetor
             gettimeofday(&tempo_antes, NULL); //coleta tempo no inicio
             srand(time(NULL));
+            //preenche os vetores com valores aleatorios
             for (j = 0; j < qtd; j++){
-                /* gerando valores aleatórios entre zero e 1000 */
-                v[j] = rand() % 1000;
-                //printf("%d = %d\n", j, v[j]);
+                /* gerando valores aleatórios entre zero e 10000 */
+                v[j] = rand() % 10000;
             }
-            selectionSort(v, qtd);
+            selectionSort(v, qtd); //chama funcao do selectionSort e passa o vetor dinamico e a quantidade de elementos a serem ordenados
 
             gettimeofday(&tempo_depois, NULL); //coleta tempo no final
             deltaT = (tempo_depois.tv_sec + tempo_depois.tv_sec/1000000.0) - (tempo_antes.tv_sec + tempo_antes.tv_sec/1000000.0);
             soma += deltaT;
-
-
-            /*printf("Vetor ordenado\n");
-            for(int i = 0; i < qtd; i++){
-                printf("%d ", v[i]);
-            }*/
-            free(v);
-
-            //printf("\nTempo de execução usando gettime: %f segundos \n", deltaT);
-            //printf("\nSomatoria do tempo: %f\n", soma);
+            free(v); //libera memoria do vetor
 
         }
-        tmp_medio[0] = soma / 10;
-        //printf("\nTempo medio: %f\n", tmp_medio[0]);
+        tmp_medio[0] = soma / 10; //calcula tempo medio de ordenacao dos vetores aleatorios
 
-        /*Tempo de execucao de vetor em ordem crescente*/
-            v = malloc (qtd * sizeof(int));
-            //Percorre o vetor de forma ordenada
-            gettimeofday(&tempo_antes, NULL);
+            /*Tempo de execucao de vetor em ordem crescente*/
+            v = malloc (qtd * sizeof(int)); //alocacao dinamica do vetor
+
+            gettimeofday(&tempo_antes, NULL); //coleta tempo de inicio
+            //Preenche o vetor ordenado de forma crescente
             for(int i = 0; i < qtd; i++){
                 v[i] = i;
-                //printf("%d ", v[i]);
             }
-            selectionSort(v, qtd);
+            selectionSort(v, qtd); //chama funcao do selectionSort
             gettimeofday(&tempo_depois, NULL); //coleta tempo no final
             tmp_medio[1] = (tempo_depois.tv_sec + tempo_depois.tv_sec/1000000.0) - (tempo_antes.tv_sec + tempo_antes.tv_sec/1000000.0);
-            //printf("\nTempo de execução dos vetores ordenados %f: \n", tmp_medio[1]);
-            free(v);
+            free(v); //libera memoria do vetor
 
             /* Tempo de execução do vetor em ordem decrescente*/
-            v = (int *) malloc(qtd * sizeof(int));
+            v = (int *) malloc(qtd * sizeof(int)); //alocacao dinamica do vetor
             gettimeofday(&tempo_antes, NULL); //coleta tempo no inicio
 
+            //preenche o vetor de forma decrescente
             for(int i = 0; i < qtd; i++){
                 v[i] = qtd - i;
-                //printf("%d ", v[i]);
             }
-            selectionSort(v, qtd);
+            selectionSort(v, qtd); //chama funcao do selectionSort
             gettimeofday(&tempo_depois, NULL); //coleta tempo no final
             tmp_medio[2] = (tempo_depois.tv_sec + tempo_depois.tv_sec/1000000.0) - (tempo_antes.tv_sec + tempo_antes.tv_sec/1000000.0);
-            //free(v);
+            free(v); //libera memoria do vetor
 
-            /*printf("Vetor decrescente ordenado\n");
-            for(int i = 0; i < qtd; i++){
-                printf("%d ", v[i]);
-            }*/
-            //printf("\nTempo de execução dos vetores ordenados %f: \n", tmp_medio[2]);
-
-            printRelatorio(qtd, tmp_medio);
+            printRelatorio(qtd, tmp_medio); //chama funcao de exibicao de relatorio do tempo de execucao
 
 
         break;
     case 9:
-        printf("Algoritmo: ShellSort\n");
+        printf("Aguarde enquanto o relatorio eh gerado...");
+        printf("\n\nAlgoritmo escolhido: ShellSort\n");
+
+        //ordenacao sera repetida 10 vezes
         for(i = 0; i < 10; i++){
-            v = (int *) malloc(qtd * sizeof(int));
+            v = (int *) malloc(qtd * sizeof(int)); //alocacao dinamica do vetor
             gettimeofday(&tempo_antes, NULL); //coleta tempo no inicio
             srand(time(NULL));
+            //preenche os vetores com valores aleatorios
             for (j = 0; j < qtd; j++){
-                /* gerando valores aleatórios entre zero e 1000 */
-                v[j] = rand() % 1000;
-                //printf("%d = %d\n", j, v[j]);
+                /* gerando valores aleatórios entre zero e 10000 */
+                v[j] = rand() % 10000;
             }
-            shellSort(v, qtd);
+            shellSort(v, qtd); //chama funcao do shellSort e passa o vetor dinamico e a quantidade de elementos a serem ordenados
             gettimeofday(&tempo_depois, NULL); //coleta tempo no final
             deltaT = (tempo_depois.tv_sec + tempo_depois.tv_sec/1000000.0) - (tempo_antes.tv_sec + tempo_antes.tv_sec/1000000.0);
             soma += deltaT;
-
-
-            /*printf("Vetor ordenado\n");
-            for(int i = 0; i < qtd; i++){
-                printf("%d ", v[i]);
-            }*/
-            free(v);
-
-            //printf("\nTempo de execução usando gettime: %f segundos \n", deltaT);
-            //printf("\nSomatoria do tempo: %f\n", soma);
-
+            free(v); //libera memoria do vetor
 
         }
-        tmp_medio[0] = soma / 10;
-         //printf("\nTempo medio: %f\n", tmp_medio[0]);
+        tmp_medio[0] = soma / 10; //calcula tempo medio de ordenacao
 
-        /*Tempo de execucao de vetor em ordem crescente*/
-            v = malloc (qtd * sizeof(int));
-            //Percorre o vetor de forma ordenada
-            gettimeofday(&tempo_antes, NULL);
+           /*Tempo de execucao de vetor em ordem crescente*/
+            v = malloc (qtd * sizeof(int)); //aloca vetor dinamicamente
+
+            gettimeofday(&tempo_antes, NULL); //coleta tempo de inicio
+             //Preenche o vetor ordenado de forma crescente
             for(int i = 0; i < qtd; i++){
                 v[i] = i;
-                //printf("%d ", v[i]);
             }
-            shellSort(v, qtd);
+            shellSort(v, qtd); //chama funcao do shellSort
             gettimeofday(&tempo_depois, NULL); //coleta tempo no final
             tmp_medio[1] = (tempo_depois.tv_sec + tempo_depois.tv_sec/1000000.0) - (tempo_antes.tv_sec + tempo_antes.tv_sec/1000000.0);
-            //printf("\nTempo de execução dos vetores ordenados %f: \n", tmp_medio[1]);
-            free(v);
+            free(v); //libera memoria do vetor
 
             /* Tempo de execução do vetor em ordem decrescente*/
-            v = (int *) malloc(qtd * sizeof(int));
+            v = (int *) malloc(qtd * sizeof(int)); //aloca vetor dinamicamente
             gettimeofday(&tempo_antes, NULL); //coleta tempo no inicio
 
-            /*for(int i = 0; i < qtd; i++){
+            //Preenche o vetor de forma decrescente
+            for(int i = 0; i < qtd; i++){
                 v[i] = qtd - i;
-                printf("%d ", v[i]);
-            }*/
-            shellSort(v, qtd);
+            }
+            shellSort(v, qtd); //chama funcao do shellSort
             gettimeofday(&tempo_depois, NULL); //coleta tempo no final
             tmp_medio[2] = (tempo_depois.tv_sec + tempo_depois.tv_sec/1000000.0) - (tempo_antes.tv_sec + tempo_antes.tv_sec/1000000.0);
-            //free(v);
+            free(v); //libera memoria do vetor
 
-            /*printf("Vetor decrescente ordenado\n");
-            for(int i = 0; i < qtd; i++){
-                printf("%d ", v[i]);
-            }*/
-            //printf("\nTempo de execução dos vetores decrescentes %f: \n", tmp_medio[2]);
-
-            printRelatorio(qtd, tmp_medio);
+            printRelatorio(qtd, tmp_medio); //chama funcao de exibicao de relatorio do tempo de execucao
 
         break;
     case 10:
-        printf("Algoritmo: TimSort\n");
+        printf("Aguarde enquanto o relatorio eh gerado...");
+        printf("\n\nAlgoritmo escolhido: TimSort\n");
+
+        //ordenacao sera repetida 10 vezes
         for(i = 0; i < 10; i++){
-            v = (int *) malloc(qtd * sizeof(int));
+            v = (int *) malloc(qtd * sizeof(int)); //aloca vetor dinamicamente
             gettimeofday(&tempo_antes, NULL); //coleta tempo no inicio
             srand(time(NULL));
+            //preenche os vetores com valores aleatorios
             for (j = 0; j < qtd; j++){
-                /* gerando valores aleatórios entre zero e 1000 */
-                v[j] = rand() % 1000;
-                //printf("%d = %d\n", j, v[j]);
+                /* gerando valores aleatórios entre zero e 10000 */
+                v[j] = rand() % 10000;
             }
-            timSort(v, qtd);
+            timSort(v, qtd); //chama funcao do timSort e passa o vetor dinamico e a quantidade de elementos a serem ordenados
             gettimeofday(&tempo_depois, NULL); //coleta tempo no final
             deltaT = (tempo_depois.tv_sec + tempo_depois.tv_sec/1000000.0) - (tempo_antes.tv_sec + tempo_antes.tv_sec/1000000.0);
             soma += deltaT;
-
-
-            /*printf("Vetor ordenado\n");
-            for(int i = 0; i < qtd; i++){
-                printf("%d ", v[i]);
-            }*/
-            free(v);
-
-            //printf("\nTempo de execução usando gettime: %f segundos \n", deltaT);
-            //printf("\nSomatoria do tempo: %f\n", soma);
+            free(v); //libera memoria do vetor
 
         }
-        tmp_medio[0] = soma / 10;
-        //printf("\nTempo medio: %f\n", tmp_medio[0]);
+        tmp_medio[0] = soma / 10; //calcula tempo medio de ordenacao
 
-        /*Tempo de execucao de vetor em ordem crescente*/
-            v = malloc (qtd * sizeof(int));
-            //Percorre o vetor de forma ordenada
-            gettimeofday(&tempo_antes, NULL);
+            /*Tempo de execucao de vetor em ordem crescente*/
+            v = malloc (qtd * sizeof(int)); //aloca vetor dinamicamente
+
+            gettimeofday(&tempo_antes, NULL); //coleta tempo no inicio
+            //Preenche o vetor ordenado de forma crescente
             for(int i = 0; i < qtd; i++){
                 v[i] = i;
-                //printf("%d ", v[i]);
             }
-            timSort(v, qtd);
+            timSort(v, qtd); //chama a funcao timSort
             gettimeofday(&tempo_depois, NULL); //coleta tempo no final
             tmp_medio[1] = (tempo_depois.tv_sec + tempo_depois.tv_sec/1000000.0) - (tempo_antes.tv_sec + tempo_antes.tv_sec/1000000.0);
-            //printf("\nTempo de execução dos vetores ordenados %f: \n", tmp_medio[1]);
-            free(v);
+            free(v); //libera memoria do vetor
 
             /* Tempo de execução do vetor em ordem decrescente*/
-            v = (int *) malloc(qtd * sizeof(int));
+            v = (int *) malloc(qtd * sizeof(int)); //aloca vetor dinamicamente
             gettimeofday(&tempo_antes, NULL); //coleta tempo no inicio
-
+            //Preenche o vetor de forma decrescente
             for(int i = 0; i < qtd; i++){
                 v[i] = qtd - i;
-                //printf("%d ", v[i]);
             }
-            timSort(v, qtd);
+            timSort(v, qtd); //chama a funcao timSort
             gettimeofday(&tempo_depois, NULL); //coleta tempo no final
             tmp_medio[2] = (tempo_depois.tv_sec + tempo_depois.tv_sec/1000000.0) - (tempo_antes.tv_sec + tempo_antes.tv_sec/1000000.0);
-            //free(v);
+            free(v); //libera memoria do vetor
 
-            /*printf("Vetor decrescente ordenado\n");
-            for(int i = 0; i < qtd; i++){
-                printf("%d ", v[i]);
-            }*/
-            //printf("\nTempo de execução dos vetores decrescentes %f: \n", tmp_medio[2]);
-
-            printRelatorio(qtd, tmp_medio);
+            printRelatorio(qtd, tmp_medio); //chama funcao de exibicao de relatorio do tempo de execucao
         break;
     case 11:
-        printf("Algoritmo: QuickSort\n");
+        printf("Aguarde enquanto o relatorio eh gerado...");
+        printf("\n\nAlgoritmo escolhido: QuickSort\n");
+
+        //ordenacao sera repetida 10 vezes
         for(i = 0; i < 10; i++){
-            v = (int *) malloc(qtd * sizeof(int));
+            v = (int *) malloc(qtd * sizeof(int)); //aloca vetor dinamicamente
             gettimeofday(&tempo_antes, NULL); //coleta tempo no inicio
             srand(time(NULL));
+            //Preenche os vetores com valores aleatorios
             for (j = 0; j < qtd; j++){
-                //v = malloc(qtd * sizeof(int));
-                /* gerando valores aleatórios entre zero e 1000 */
-                v[j] = rand() % 1000;
-                //printf("%d = %d\n", j, v[j]);
+                /* gerando valores aleatórios entre zero e 10000 */
+                v[j] = rand() % 10000;
             }
-            quick_sort(v, 0, qtd - 1);
+            quick_sort(v, 0, qtd - 1); //chama funcao do quick_sort e passa o vetor dinamico e a quantidade de elementos a serem ordenados
             gettimeofday(&tempo_depois, NULL); //coleta tempo no final
             deltaT = (tempo_depois.tv_sec + tempo_depois.tv_sec/1000000.0) - (tempo_antes.tv_sec + tempo_antes.tv_sec/1000000.0);
             soma += deltaT;
-
-
-            /*printf("Vetor ordenado\n");
-            for(int i = 0; i < qtd; i++){
-                printf("%d ", v[i]);
-            }*/
-            free(v);
-
-            //printf("\nTempo de execução usando gettime: %f segundos \n", deltaT);
-            //printf("\nSomatoria do tempo: %f\n", soma);
+            free(v); //libera memoria do vetor
 
         }
-        tmp_medio[0] = soma / 10;
-        //printf("\nTempo medio: %f\n", tmp_medio[0]);
+        tmp_medio[0] = soma / 10; //calcula tempo medio de ordenacao
 
 
-        /*Tempo de execucao de vetor em ordem crescente*/
-            v = malloc (qtd * sizeof(int));
-            //Percorre o vetor de forma ordenada
-            gettimeofday(&tempo_antes, NULL);
+           /*Tempo de execucao de vetor em ordem crescente*/
+            v = malloc (qtd * sizeof(int)); //vetor alocado dinamicamente
+
+            gettimeofday(&tempo_antes, NULL); //coleta tempo no inicio
+            //Preenche o vetor ordenado de forma crescente
             for(int i = 0; i < qtd; i++){
                 v[i] = i;
-                //printf("%d ", v[i]);
             }
-            quick_sort(v, 0, qtd - 1);
+            quick_sort(v, 0, qtd - 1); //chama a funcao quick_sort
             gettimeofday(&tempo_depois, NULL); //coleta tempo no final
             tmp_medio[1] = (tempo_depois.tv_sec + tempo_depois.tv_sec/1000000.0) - (tempo_antes.tv_sec + tempo_antes.tv_sec/1000000.0);
-            //printf("\nTempo de execução dos vetores ordenados %f: \n", tmp_medio[1]);
-            free(v);
+            free(v); //libera memoria do vetor
 
             /* Tempo de execução do vetor em ordem decrescente*/
-            v = (int *) malloc(qtd * sizeof(int));
+            v = (int *) malloc(qtd * sizeof(int)); //aloca vetor dinamicamente
             gettimeofday(&tempo_antes, NULL); //coleta tempo no inicio
 
+            //Preenche vetor de forma decrescente
             for(int i = 0; i < qtd; i++){
                 v[i] = qtd - i;
-                //printf("%d ", v[i]);
             }
-            quick_sort(v, 0, qtd - 1);
+            quick_sort(v, 0, qtd - 1); //chama a funcao quick_sort
             gettimeofday(&tempo_depois, NULL); //coleta tempo no final
             tmp_medio[2] = (tempo_depois.tv_sec + tempo_depois.tv_sec/1000000.0) - (tempo_antes.tv_sec + tempo_antes.tv_sec/1000000.0);
-            free(v);
+            free(v); //libera memoria do vetor
 
-           /* printf("Vetor decrescente ordenado\n");
-            for(int i = 0; i < qtd; i++){
-                printf("%d ", v[i]);
-            }
-            printf("\nTempo de execução dos vetores decrescentes %f: \n", tmp_medio[2]);*/
-
-            printRelatorio(qtd, tmp_medio);
+            printRelatorio(qtd, tmp_medio); //chama funcao de exibicao de relatorio do tempo de execucao
 
         break;
 
@@ -836,8 +679,8 @@ int algoritmoEscolhido(int alg, int qtd){
 
 }
 
-void bead_sort(int *a, int qtd)
-{
+/*Inicio da funcao bead_sort*/
+void bead_sort(int *a, int qtd){
     //SUM = SOMA DA COLUNA
 	int i, j, max, sum;
 	unsigned char *beads;
@@ -877,7 +720,9 @@ void bead_sort(int *a, int qtd)
 	}
 	//free(beads);
 }
+/* Fim da funcao bead_sort*/
 
+/*Inicio da funcao bubble_sort*/
 void bubble_sort(int *v, int qtd)
 {
 
@@ -899,7 +744,10 @@ void bubble_sort(int *v, int qtd)
 
 
 }
+/*Fim da funcao bubble_sort*/
 
+
+/*Inicio da funcao countingSort */
 void countingSort(int *v, int size) {
   int output[100000];
 
@@ -943,9 +791,9 @@ void countingSort(int *v, int size) {
     v[i] = output[i];
   }
 }
+/*Fim da funcao countingSort */
 
-
-
+/*Inicio da funcao HeapSort */
 void HeapSort(int *v, int qtd){
     int i, aux;
 
@@ -959,20 +807,6 @@ void HeapSort(int *v, int qtd){
         v[i] = aux;
         CriandoHeap(v, 0, i-1);
     }
-}
-
-//Funcao insertion sort
-void Insertion_Sort(int *v, int n) {
-    int i, j, aux;
-
-    for(i = 1; i < n; i++){
-        aux = v[i];
-        for(j = i; (j > 0) && (aux < v[j-1]); j--){
-            v[j] = v[j-1];
-        }
-        v[j] = aux;
-    }
-
 }
 
 void CriandoHeap(int *v, int ini, int fim){
@@ -998,7 +832,25 @@ void CriandoHeap(int *v, int ini, int fim){
 
     v[ini] = aux;
 }
+/*Fim da funcao HeapSort */
 
+/*Inicio da funcao Insertion_Sort */
+void Insertion_Sort(int *v, int n) {
+    int i, j, aux;
+
+    for(i = 1; i < n; i++){
+        aux = v[i];
+        for(j = i; (j > 0) && (aux < v[j-1]); j--){
+            v[j] = v[j-1];
+        }
+        v[j] = aux;
+    }
+
+}
+
+/*Fim da funcao Insertion_Sort */
+
+/*Inicio da funcao mergeSort */
 void merge(int *v, int l, int m, int r)
 {
 	int i, j, k;
@@ -1052,8 +904,7 @@ void merge(int *v, int l, int m, int r)
 	}
 }
 
-/* l is for left index and r is right index of the
-sub-array of arr to be sorted */
+
 void mergeSort(int *v, int l, int r)
 {
 	if (l < r)
@@ -1069,8 +920,9 @@ void mergeSort(int *v, int l, int r)
 		merge(v, l, m, r);
 	}
 }
+/*Fim da funcao mergeSort */
 
-
+/*Inicio da funcao radixsort */
 // Function to get the largest element from an array
 int getMax(int v[], int n) {
   int max = v[0];
@@ -1121,11 +973,11 @@ void radixsort(int *v, int size) {
   for (int place = 1; max / place > 0; place *= 10)
     countSort(v, size, place);
 }
+/*Fim da funcao radixsort */
 
 
 
-
-//funcao selection sort
+/*Inicio da funcao selectionSort */
 void selectionSort(int *v, int n) {
     int i, j, menor, troca;
 
@@ -1143,7 +995,9 @@ void selectionSort(int *v, int n) {
         }
     }
 }
-//algoritmo ShellSort
+/*Fim da funcao selectionSort */
+
+/*Inicio da funcao shellSort */
 void shellSort(int *v, int size) {
     int i , j , value;
 
@@ -1164,95 +1018,87 @@ void shellSort(int *v, int size) {
         h = h/3;
     }
 }
+/*Fim da funcao shellSort */
 
-//Escopo da funcao timsort
+/*Inicio da funcao timSort */
 const int run = 32;
 
-    int minimum(int a, int b)
-    {
-        if(a<b)
+int minimum(int a, int b){
+    if(a<b)
         return a;
-        else
+    else
         return b;
 }
 
-    void insertionSort(int v[], int beg, int end)
-    {
-        int temp, i, j;
-        for (i = beg + 1; i <= end; i++)
-        {
-            temp = v[i];
-            j = i - 1;
-            while (v[j] > temp && j >= beg)
-            {
+void insertionSort(int v[], int beg, int end){
+    int temp, i, j;
+    for (i = beg + 1; i <= end; i++){
+        temp = v[i];
+        j = i - 1;
+        while (v[j] > temp && j >= beg){
                 v[j+1] = v[j];
                 j--;
-            }
-            v[j+1] = temp;
         }
+        v[j+1] = temp;
     }
+}
 
-void merge_tim(int v[], int left, int mid, int right)
-    {
-        int len1 = mid - left + 1, len2 = right - mid;
-        int beg[len1], end[len2];
-        int i,j,k;
-        for (i = 0; i < len1; i++)
-            beg[i] = v[left + i];
-        for (i = 0; i < len2; i++)
-            end[i] = v[mid + 1 + i];
+void merge_tim(int v[], int left, int mid, int right){
+    int len1 = mid - left + 1, len2 = right - mid;
+    int beg[len1], end[len2];
+    int i,j,k;
+    for (i = 0; i < len1; i++)
+        beg[i] = v[left + i];
+    for (i = 0; i < len2; i++)
+        end[i] = v[mid + 1 + i];
 
         i = 0;
         j = 0;
         k = left;
 
-        while (i < len1 && j < len2)
-        {
-            if (beg[i] <= end[j])
-            {
+        while (i < len1 && j < len2) {
+            if (beg[i] <= end[j]) {
                 v[k] = beg[i];
                 i++;
-            }
-            else
-            {
+            } else {
                 v[k] = end[j];
                 j++;
             }
             k++;
         }
-        while (i < len1)
-        {
+        while (i < len1) {
             v[k] = beg[i];
             k++;
             i++;
         }
 
-        while (j < len2)
-        {
+        while (j < len2) {
             v[k] = end[j];
             k++;
             j++;
         }
     }
-//funcao timSort
+
 void timSort(int v[], int qtd) {
-                int i,size,beg,mid,end;
-                for (i = 0; i < qtd; i+=run)
-                    insertionSort(v, i, minimum((i+31), (qtd-1)));
-                for (size = run; size < qtd; size = 2*size)
-                {
-                    for (beg = 0; beg < qtd; beg += 2*size)
-                    {
-                        mid = beg + size - 1;
-                        end = minimum((beg + 2*size - 1), (qtd-1));
 
-                        merge_tim(v, beg, mid, end);
-                    }
-                }
+    int i,size,beg,mid,end;
+
+    for (i = 0; i < qtd; i+=run)
+        insertionSort(v, i, minimum((i+31), (qtd-1)));
+
+    for (size = run; size < qtd; size = 2*size) {
+        for (beg = 0; beg < qtd; beg += 2*size) {
+            mid = beg + size - 1;
+            end = minimum((beg + 2*size - 1), (qtd-1));
+
+            merge_tim(v, beg, mid, end);
+        }
     }
+}
+/*Fim da funcao timSort */
 
 
-
+/*Fim da funcao quick_sort */
 //funcao do quicksort, particiona e retorna o indice do pivo
 int particiona(int *v, int ini, int fim) {
     int esq, dir, pivo, aux;
@@ -1279,10 +1125,9 @@ int particiona(int *v, int ini, int fim) {
     v[dir] = pivo; //posicao da direita se torna o pivo
     return dir;
 
-
 }
 
-// funcao do quick sort
+
 void quick_sort(int *v, int ini, int fim){
 
     int pivo;
@@ -1295,3 +1140,4 @@ void quick_sort(int *v, int ini, int fim){
     }
 
 }
+/*Fim da funcao quick_sort */
